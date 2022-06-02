@@ -1,4 +1,4 @@
-/* nvd3 version 1.8.2 (https://github.com/novus/nvd3) 2016-07-01 */
+/* nvd3 version 1.8.2 (https://github.com/novus/nvd3) 2022-06-02 */
 (function(){
 
 // set up main nv object
@@ -10852,7 +10852,7 @@ nv.models.parallelCoordinatesChart = function () {
                 var avgHeight = 14;
                 var avgWidth = 140;
                 var createHashKey = function(coordinates) {
-                    return Math.floor(coordinates[0]/avgWidth) * avgWidth + ',' + Math.floor(coordinates[1]/avgHeight) * avgHeight;
+                    return Math.trunc(coordinates[0]/avgWidth) * avgWidth + ',' + Math.trunc(coordinates[1]/avgHeight) * avgHeight;
                 };
                 var getSlicePercentage = function(d) {
                     return (d.endAngle - d.startAngle) / (2 * Math.PI);
