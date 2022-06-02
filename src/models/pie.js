@@ -259,7 +259,7 @@ nv.models.pie = function() {
                 var avgHeight = 14;
                 var avgWidth = 140;
                 var createHashKey = function(coordinates) {
-                    return Math.floor(coordinates[0]/avgWidth) * avgWidth + ',' + Math.floor(coordinates[1]/avgHeight) * avgHeight;
+                    return Math.trunc(coordinates[0]/avgWidth) * avgWidth + ',' + Math.trunc(coordinates[1]/avgHeight) * avgHeight;
                 };
                 var getSlicePercentage = function(d) {
                     return (d.endAngle - d.startAngle) / (2 * Math.PI);
