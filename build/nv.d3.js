@@ -1,4 +1,4 @@
-/* nvd3 version 1.8.2 (https://github.com/novus/nvd3) 2022-06-02 */
+/* nvd3 version 1.8.2 (https://github.com/novus/nvd3) 2022-06-06 */
 (function(){
 
 // set up main nv object
@@ -10848,15 +10848,13 @@ nv.models.parallelCoordinatesChart = function () {
                         .style('fill', '#000')
                 });
 
-                var labelLocationHash = {};
-                var avgHeight = 14;
-                var avgWidth = 140;
-                var createHashKey = function(coordinates) {
-                    return Math.trunc(coordinates[0]/avgWidth) * avgWidth + ',' + Math.trunc(coordinates[1]/avgHeight) * avgHeight;
-                };
+                var labelHeight = 14;
+
                 var getSlicePercentage = function(d) {
                     return (d.endAngle - d.startAngle) / (2 * Math.PI);
                 };
+
+                var previousCenters = [];
 
                 pieLabels.watchTransition(renderWatch, 'pie labels').attr('transform', function (d, i) {
                     if (labelSunbeamLayout) {
@@ -10874,18 +10872,39 @@ nv.models.parallelCoordinatesChart = function () {
                         d.innerRadius = radius + 15; // Set Inner Coordinate
 
                         /*
-                        Overlapping pie labels are not good. What this attempts to do is, prevent overlapping.
-                        Each label location is hashed, and if a hash collision occurs, we assume an overlap.
-                        Adjust the label's y-position to remove the overlap.
+                        Attempt to avoid overlapping labels by moving adjacent labels up or down,
+                        and moving other non-adjacent labels apart horizontally if needed
                         */
                         var center = labelsArc[i].centroid(d);
                         var percent = getSlicePercentage(d);
                         if (d.value && percent >= labelThreshold) {
-                            var hashKey = createHashKey(center);
-                            if (labelLocationHash[hashKey]) {
-                                center[1] -= avgHeight;
+                            // Calculate the label width, kinda
+                            var width = d.data.key.length * 6;
+
+                            for (var pc = previousCenters.length - 1; pc >= 0; pc--) {
+                                // Walk back through the previous labels and determine if there's a potential overlap
+                                var previousCenter = previousCenters[pc].center;
+                                var previousWidth = previousCenters[pc].width;
+                                if (Math.abs(center[0] - previousCenter[0]) < (width + previousWidth)/2 && Math.abs(center[1] - previousCenter[1]) < labelHeight) {
+                                    // If the labels seem to overlap horizontally and vertically, take action
+                                    if (pc === previousCenters.length - 1) {
+                                        // If the label is overlapping with the direct previous label,
+                                        // then move it up or down depending on which part of the circle it's on.
+                                        // Ideally, we'd move it out along the radius, but I'm not 100% sure how to do that (math!)
+                                        if ((d.startAngle + d.endAngle) / 2 < Math.PI) {
+                                            center[1] = previousCenter[1] + labelHeight;
+                                        } else {
+                                            center[1] = previousCenter[1] - labelHeight;
+                                        }
+                                    } else {
+                                        // If the label is overlapping with an indirect predecessor, just move it horizontally.
+                                        // Again, ideally, we'd move it out along the radius, but I'm not 100% sure how to do that (math!)
+                                        center[0] = previousCenter[0] - (width + previousWidth)/2;
+                                    }
+                                }
                             }
-                            labelLocationHash[createHashKey(center)] = true;
+
+                            previousCenters.push({width: width, center: center.slice()});
                         }
                         return 'translate(' + center + ')'
                     }
