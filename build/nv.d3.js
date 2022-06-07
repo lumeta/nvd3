@@ -1,4 +1,4 @@
-/* nvd3 version 1.8.2 (https://github.com/novus/nvd3) 2022-06-06 */
+/* nvd3 version 1.8.2 (https://github.com/novus/nvd3) 2022-06-07 */
 (function(){
 
 // set up main nv object
@@ -10879,7 +10879,7 @@ nv.models.parallelCoordinatesChart = function () {
                         var percent = getSlicePercentage(d);
                         if (d.value && percent >= labelThreshold) {
                             // Calculate the label width, kinda
-                            var width = d.data.key.length * 6;
+                            var width = d.data.key.length * 7;
 
                             for (var pc = previousCenters.length - 1; pc >= 0; pc--) {
                                 // Walk back through the previous labels and determine if there's a potential overlap
