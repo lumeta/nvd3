@@ -286,7 +286,7 @@ nv.models.pie = function() {
                         var percent = getSlicePercentage(d);
                         if (d.value && percent >= labelThreshold) {
                             // Calculate the label width, kinda
-                            var width = d.data.key.length * 6;
+                            var width = d.data.key.length * 7;
 
                             for (var pc = previousCenters.length - 1; pc >= 0; pc--) {
                                 // Walk back through the previous labels and determine if there's a potential overlap
