@@ -1,4 +1,4 @@
-/* nvd3 version 1.8.2 (https://github.com/novus/nvd3) 2022-06-07 */
+/* nvd3 version 1.8.2 (https://github.com/novus/nvd3) 2022-06-08 */
 (function(){
 
 // set up main nv object
@@ -10887,10 +10887,9 @@ nv.models.parallelCoordinatesChart = function () {
                                 var previousWidth = previousCenters[pc].width;
                                 if (Math.abs(center[0] - previousCenter[0]) < (width + previousWidth)/2 && Math.abs(center[1] - previousCenter[1]) < labelHeight) {
                                     // If the labels seem to overlap horizontally and vertically, take action
-                                    if (pc === previousCenters.length - 1) {
+                                    if (pc === previousCenters.length - 1 || i === labelsArc.length - 1 && pc === 0) {
                                         // If the label is overlapping with the direct previous label,
                                         // then move it up or down depending on which part of the circle it's on.
-                                        // Ideally, we'd move it out along the radius, but I'm not 100% sure how to do that (math!)
                                         if ((d.startAngle + d.endAngle) / 2 < Math.PI) {
                                             center[1] = previousCenter[1] + labelHeight;
                                         } else {
@@ -10898,7 +10897,6 @@ nv.models.parallelCoordinatesChart = function () {
                                         }
                                     } else {
                                         // If the label is overlapping with an indirect predecessor, just move it horizontally.
-                                        // Again, ideally, we'd move it out along the radius, but I'm not 100% sure how to do that (math!)
                                         center[0] = previousCenter[0] - (width + previousWidth)/2;
                                     }
                                 }
