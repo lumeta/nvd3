@@ -297,7 +297,7 @@ nv.models.pie = function() {
                                     if (pc === previousCenters.length - 1 || i === labelsArc.length - 1 && pc === 0) {
                                         // If the label is overlapping with the direct previous label,
                                         // then move it up or down depending on which part of the circle it's on.
-                                        if ((d.startAngle + d.endAngle) / 2 < Math.PI) {
+                                        if (d.endAngle < Math.PI || d.startAngle > Math.PI * 0.75) {
                                             center[1] = previousCenter[1] + labelHeight;
                                         } else {
                                             center[1] = previousCenter[1] - labelHeight;
